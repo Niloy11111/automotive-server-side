@@ -30,6 +30,50 @@ async function run() {
 
     const allProducts =client.db("productDB").collection("products");
 
+
+    app.get('/brands/Toyota', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'Toyota'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+
+    app.get('/brands/Ford', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'Ford'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+    app.get('/brands/BMW', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'BMW'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+    app.get('/brands/Mercedes-Benz', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'Mercedes-Benz'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+    app.get('/brands/Tesla', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'Tesla'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+    app.get('/brands/Honda', async(req, res) => {
+      const cursor = allProducts.find({'brandName' : 'Honda'})
+      const result = await cursor.toArray() ;
+      res.send(result)
+    })
+
+    app.get('/allProducts', async (req, res) => { 
+      const cursor = allProducts.find();
+      const result = await cursor.toArray();
+      res.send(result);
+  })
+
     app.post('/addProduct', async(req, res) => {
        const newProduct = req.body ;
        console.log(newProduct)
@@ -37,7 +81,7 @@ async function run() {
        res.send(result) ;
     })
 
-
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
