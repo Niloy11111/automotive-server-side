@@ -1,6 +1,6 @@
 const express = require('express') ;
 const cors = require('cors') ;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 require('dotenv').config() ;
 const app = express() ;
@@ -26,10 +26,24 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     
-    await client.connect();
+    // await client.connect();
 
     const allProducts =client.db("productDB").collection("products");
 
+    const allProductsDetails =client.db("productDB").collection("productDetails");
+
+    app.get('/allProducts', async (req, res) => { 
+      const cursor = allProducts.find();
+      const result = await cursor.toArray();
+      res.send(result);
+  })
+
+  app.get('/allProducts/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) }
+    const result = await allProducts.findOne(query);
+    res.send(result);
+})
 
     app.get('/brands/Toyota', async(req, res) => {
       const cursor = allProducts.find({'brandName' : 'Toyota'})
@@ -37,7 +51,7 @@ async function run() {
       res.send(result)
     })
 
-
+  
     app.get('/brands/Ford', async(req, res) => {
       const cursor = allProducts.find({'brandName' : 'Ford'})
       const result = await cursor.toArray() ;
@@ -68,11 +82,6 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/allProducts', async (req, res) => { 
-      const cursor = allProducts.find();
-      const result = await cursor.toArray();
-      res.send(result);
-  })
 
     app.post('/addProduct', async(req, res) => {
        const newProduct = req.body ;
@@ -80,6 +89,46 @@ async function run() {
        const result = await allProducts.insertOne(newProduct);
        res.send(result) ;
     })
+
+
+    app.put('/allProducts/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedProduct = req.body;
+
+      const product = {
+          $set: {
+            photoURL : updatedProduct.photoURL,
+             productName : updatedProduct.productName,
+             brandName : updatedProduct.brandName,
+             productType : updatedProduct.productType,
+             productPrice : updatedProduct.productPrice,
+            description : updatedProduct.description,
+             rating : updatedProduct.rating,
+          }
+      }
+
+      const result = await allProducts.updateOne(filter, product, options);
+      res.send(result);
+  })
+
+
+//   app.delete('/allProducts/:id', async (req, res) => {
+//     const id = req.params.id;
+//     const query = { _id: new ObjectId(id) }
+//     const result = await allProducts.deleteOne(query);
+//     res.send(result);
+// })
+
+    // app.post('/addDetails', async(req, res) => {
+    //    const newProduct = req.body ;
+    //    console.log(newProduct)
+    //    const result = await allProductsDetails.insertOne(newProduct);
+    //    res.send(result) ;
+    // })
+
+    
 
     
 
