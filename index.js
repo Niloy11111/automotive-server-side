@@ -154,9 +154,9 @@ app.use(express.json())
 
 
 app.get('/', (req, res) => {
-    res.send('Coffee making server running')
+    res.send('current server running')
 })
 
 app.listen(port, () => {
-    console.log(`Coffee server is running on port: ${port}`)
+    console.log(`Current server is running on port: ${port}`)
 })
